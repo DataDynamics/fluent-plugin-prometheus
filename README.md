@@ -100,45 +100,11 @@ ridk install
 ridk enable
 ```
 
-## Flugin Plugin Installation
+## Fluent Plugin Installation
 
-### RubyGems
-
-```
-$ gem install fluent-plugin-prometheus
-```
-
-### Bundler
-
-Add following line to your Gemfile:
-
-```ruby
-gem "fluent-plugin-prometheus"
-```
-
-And then execute:
-
-```
-$ bundle
-```
-
-## Configuration
-
-You can generate configuration template:
-
-```
-$ fluent-plugin-config-format output prometheus
-```
-## Gem 수동 설치
-
-다음의 커맨드를 실행하면 관련 gem을 `vendor/cache` 디렉토리에 모두 다운로드합니다.
-
-```
-# bundle package
-```
-
-추후 오프라인 환경에서 설치를 하는 경우 다음의 커맨드를 이용할 수 있습니다.
-
-```
-# gem install --local gem_file.gem
+```bash
+$ cd <PLUGIN_HOME>
+$ /opt/fluent/bin/gem build fluent-plugin-prometheus.gemspec
+$ /opt/fluent/bin/gem install fluent-plugin-prometheus-0.1.0.gem
+$ ls -lsa /opt/fluent/lib/ruby/gems/3.2.0/gems
 ```
