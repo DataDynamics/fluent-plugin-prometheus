@@ -8,26 +8,25 @@ require 'uri'
 module Fluent
   module Plugin
     class PrometheusOut < Fluent::Plugin::Output
-      Fluent::Plugin.register_output("prometheus", self)
+      Fluent::Plugin.register_output("prometheus-pushgateway", self)
 
       attr_accessor :engine, :scheduler, :registry, :gateway, :job
 
       def configure(conf)
         super
-        print "Configure Started\n"
+        $log.info "Prometheus Output Configure Started\n"
 
         @gateway = conf["gateway"]
         @job = conf["job"]
 
-        print "Prometheus Push Gateway: #{@gateway}\n"
-        print "Prometheus Job: #{job}\n"
+        $log.info "Prometheus Push Gateway: #{@gateway}\n"
+        $log.info "Prometheus Job: #{job}\n"
 
         @scheduler = Rufus::Scheduler.new
         @registry = Prometheus::Client.registry
 
         @scheduler.every '15s' do
-          puts "Pushing to Prometheus Push Gateway: #{@gateway}"
-
+          $log.info "Pushing to Prometheus Push Gateway: #{@gateway}"
         end
       end
 
@@ -66,9 +65,9 @@ module Fluent
         request['Content-Type'] = 'text/plain'
 
         response = http.request(request)
-        puts "Response from Push Gateway: #{response.code} #{response.message}"
+        $log.info "Response from Push Gateway: #{response.code} #{response.message}"
       rescue StandardError => e
-        puts "Failed to push metrics to Push Gateway: #{e.message}"
+        $log.warn "Failed to push metrics to Push Gateway: #{e.message}"
       end
     end
   end
