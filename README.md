@@ -114,3 +114,23 @@ $ /opt/fluent/bin/gem build fluent-plugin-prometheus.gemspec
 $ /opt/fluent/bin/gem install fluent-plugin-prometheus-0.1.0.gem
 $ ls -lsa /opt/fluent/lib/ruby/gems/3.2.0/gems
 ```
+
+## 트러블 슈팅
+
+### Rufus Scheduler on Windows
+
+Rufus Scheduler를 윈도 환경에서 사용하고자 할 때 다음과 같은 에러 메시지가 발생합니다. 환경변수 `ENV['TZ'] = 'Asia/Seoul'`로 셋업하십시오.
+
+```
+ArgumentError: Cannot determine timezone from nil
+(secs:1736561949.800969,utc~:"2025-01-11 02:19:09.8009688854217529",ltz~:nil)
+(etz:nil,tnz:"\x{B4EB}\x{C7D1}\x{B9CE}\x{B1B9} \x{C7A5}\x{C1D8}\x{BDC3}",tziv:"2.0.6",tzidv:"1.2024.2",rv:"3.2.6",rp:"x64-mingw-ucrt",win:true,rorv:nil,astz:nil,eov:"1.2.11",eotnz:"???",eotnfz:"???",eotlzn:"???",
+debian:nil,centos:nil,osx:nil)
+Try setting `ENV['TZ'] = 'Continent/City'` in your script (see https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
+C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/et-orbi-1.2.11/lib/et-orbi/time.rb:82:in `initialize'
+    C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/et-orbi-1.2.11/lib/et-orbi/make.rb:17:in `new'
+    C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/et-orbi-1.2.11/lib/et-orbi/make.rb:17:in `now'
+    C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/et-orbi-1.2.11/lib/et-orbi/time.rb:22:in `now'
+    C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rufus-scheduler-3.9.2/lib/rufus/scheduler.rb:631:in `start'
+    C:/Ruby32-x64/lib/ruby/gems/3.2.0/gems/rufus-scheduler-3.9.2/lib/rufus/scheduler.rb:98:in `initialize'
+```

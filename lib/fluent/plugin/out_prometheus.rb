@@ -53,6 +53,8 @@ module Fluent
 
           m = @registry.get(record["metric-name"])
           m.increment(labels: labels)
+
+          $log.debug "Prometheus Metric: #{m.inspect}"
         end
       end
 
