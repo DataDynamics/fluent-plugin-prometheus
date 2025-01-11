@@ -26,6 +26,8 @@ module Fluent
         @registry = Prometheus::Client.registry
 
         @scheduler.every '15s' do
+          push_to_gateway(generate_metrics_text)
+
           $log.info "Pushing to Prometheus Push Gateway: #{@gateway}"
         end
       end
@@ -41,6 +43,8 @@ module Fluent
       end
 
       def process(tag, records)
+        # 메시지가 유입되면 Prometheus Metric을 생성하고 처리한다.
+        # 대부분은 Counter이므로 increment 처리를 하지만 Gauge는 값을 Setting해야 한다.
         records.each do |time, record|
           labels = { type: record["type"], instance: record["instance"], source: record["job"] }
           if @registry.get(record["metric-name"]).nil?
@@ -50,7 +54,6 @@ module Fluent
           m = @registry.get(record["metric-name"])
           m.increment(labels: labels)
         end
-        push_to_gateway(generate_metrics_text)
       end
 
       def generate_metrics_text
@@ -65,7 +68,7 @@ module Fluent
         request['Content-Type'] = 'text/plain'
 
         response = http.request(request)
-        $log.info "Response from Push Gateway: #{response.code} #{response.message}"
+        $log.debug "Response from Push Gateway: #{response.code} #{response.message}"
       rescue StandardError => e
         $log.warn "Failed to push metrics to Push Gateway: #{e.message}"
       end
