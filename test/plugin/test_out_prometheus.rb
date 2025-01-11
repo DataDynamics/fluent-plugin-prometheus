@@ -12,33 +12,37 @@ class PrometheusOutTest < Test::Unit::TestCase
 
   messages = [
     {
-      "message" => "Unable to open scanner for node with id ‘0’ for Kudu table ‘nc.d_so’ : Time out : exceeded configure scan timeout of 180.000s: Scan RPC to x.x.x.x:7050 timed out after 179.999 (ON_OUTBOUND_QUEUE)",
+      "message" => "Unable to open scanner for node with id ‘0’ for Kudu table ‘nc.d_so’ : Time out : exceeded configured scan timeout of 180.000s: Scan RPC to x.x.x.x:7050 timed out after 179.999 (ON_OUTBOUND_QUEUE)",
       "category" => "prometheus",
-      "type" => "SCAN_TIMEOUT",
+      "type" => "TIMEOUT",
       "metric-type" => "Counter",
-      "metric-name" => "kudu_scan_timeout_count",
-      "table_name" => "nc.d_so",
-      "metric-desc" => "Kudu Scan Timeout 건수"
+      "metric-name" => "collect_kudu_scan_timeout_count",
+      "metric-prefix" => "collect_kudu_scan_timeout",
+      "metric-desc" => "Kudu Scan Timeout 건수",
+      "attr_table_name" => "nc.d_so"
     },
     {
       "message" => "Row Projector request submit failed: service unavailable: Thread pool is at capacity(1/1 tasks running , 100/100 tasks queued) [suppressed 79 similar messages]Proxy.cc:231] call had error, refreshing address and retrying: Remote error: Service unavailable: Update Consensus request on kudu.consensus. consensusService from 1.1.1.1:55108 dropped due to backpressure. The service queue is full; it has 50 items",
       "category" => "prometheus",
-      "type" => "BACKPRESSURE",
+      "type" => "RESOURCE",
       "metric-type" => "Counter",
-      "metric-name" => "kudu_backpressure_count",
-      "items" => "50",
-      "current_running_tasks" => 1,
-      "max_running_tasks" => 1,
-      "current_queued_tasks" => 100,
-      "max_queued_tasks" => 100,
-      "metric-desc" => "Kudu Backpressure 건수"
+      "metric-name" => "collect_kudu_backpressure_count",
+      "metric-prefix" => "collect_kudu_backpressure",
+      "metric-desc" => "Kudu Backpressure 건수",
+      "metric_service_queue_items" => 50,
+      "metric_current_running_tasks" => 1,
+      "metric_max_running_tasks" => 1,
+      "metric_current_queued_tasks" => 100,
+      "metric_queued_tasks" => 100,
+      "metric_max_queued_tasks" => 30
     },
     {
       "message" => "Failed to write batch of 6 ops to tablet after 1 attempt : Failed to write to server : Write RPC to  x.x.x.x:7050 timed out after 179.999 (ON_OUTBOUND_QUEUE)",
       "category" => "prometheus",
-      "type" => "WRITER_TIMEOUT",
+      "type" => "TIMEOUT",
       "metric-type" => "Counter",
-      "metric-name" => "kudu_write_batch_timeout_count",
+      "metric-name" => "collect_kudu_write_batch_timeout_count",
+      "metric-prefix" => "collect_kudu_write_batch_timeout",
       "metric-desc" => "Kudu Client Timeout 건수"
     }
   ]

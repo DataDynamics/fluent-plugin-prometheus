@@ -65,7 +65,35 @@ module Fluent
           end
 
           m = @registry.get(record["metric-name"])
-          m.increment(labels: { type: record["type"], instance: @instance, source: @job })
+          labels = { type: record["type"], instance: @instance, source: @job }
+
+          # attr_ 로 시작하는 Attribute는 Prometheus Metric의 Label로 설정한다.
+          # Prometheus는 Metric 생성 후에는 Label을 변경할 수 없다.
+          # record.keys.each { |key|
+          #   if key.start_with?("attr_")
+          #     label_name = key.sub(/^attr_/, "")
+          #     label_value = record[key]
+          #     labels[label_name.to_sym] = label_value
+          #   end
+          # }
+
+          m.increment(labels: labels)
+
+          prefix = record["metric-prefix"]
+          record.keys.each { |key|
+            if key.start_with?("metric_")
+              label_name = key.sub(/^metric_/, "")
+              label_value = record[key]
+
+              metric_name = "#{prefix}_#{label_name}"
+              metric_desc = metric_name.sub(/^_/, " ")
+              if @registry.get(metric_name).nil?
+                @registry.gauge(to_symbol(metric_name), docstring: metric_desc, labels: [:type, :instance, :source])
+              end
+              g = @registry.get(metric_name)
+              g.set(label_value, labels: labels)
+            end
+          }
 
           $log.debug "Prometheus Metric: #{m.inspect}"
         end
@@ -74,6 +102,19 @@ module Fluent
       def generate_metrics_text
         Prometheus::Client::Formats::Text.marshal(Prometheus::Client.registry)
       end
+    end
+
+    def push_to_gateway(metrics_text)
+      uri = URI.parse("http://#{@gateway}/metrics/job/#{@job}")
+      http = Net::HTTP.new(uri.host, uri.port)
+      request = Net::HTTP::Put.new(uri.path)
+      request.body = metrics_text
+      request['Content-Type'] = 'text/plain'
+
+      response = http.request(request)
+      $log.debug "Response from Push Gateway: #{response.code} #{response.message}"
+    rescue StandardError => e
+      $log.warn "Failed to push metrics to Push Gateway: #{e.message}"
     end
   end
 end
