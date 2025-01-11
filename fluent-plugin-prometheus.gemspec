@@ -23,4 +23,5 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency "fluentd", [">= 0.14.10", "< 2"]
   s.add_runtime_dependency "prometheus-client", "~> 4.2.3"
   s.add_runtime_dependency "rufus-scheduler", "~> 3.9.2"
+  s.add_runtime_dependency "httpx", "~> 1.4.0"
 end

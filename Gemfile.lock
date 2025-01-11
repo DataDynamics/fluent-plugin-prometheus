@@ -3,6 +3,7 @@ PATH
   specs:
     fluent-plugin-prometheus (0.1.0)
       fluentd (>= 0.14.10, < 2)
+      httpx (~> 1.4.0)
       prometheus-client (~> 4.2.3)
       rufus-scheduler (~> 3.9.2)
 
@@ -59,7 +60,10 @@ GEM
     fugit (1.11.1)
       et-orbi (~> 1, >= 1.2.11)
       raabro (~> 1.4)
+    http-2 (1.0.2)
     http_parser.rb (0.8.0)
+    httpx (1.4.0)
+      http-2 (>= 1.0.0)
     logger (1.6.4)
     msgpack (1.7.5)
     power_assert (2.0.5)
