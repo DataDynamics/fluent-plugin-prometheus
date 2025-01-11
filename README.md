@@ -100,6 +100,12 @@ ridk install
 ridk enable
 ```
 
+Gem 파일을 설치하기 위해서 다음의 커맨드를 실행합니다.
+
+```
+bundle install
+```
+
 ## Fluent Plugin Installation
 
 ```bash
